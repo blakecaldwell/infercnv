@@ -237,8 +237,9 @@ setMethod(f="getGenesCells",
           signature="MCMC_inferCNV",
           definition=function(obj, pred_cnv_genes_df, cell_groups_df)
           {
+              mc.cores = ifelse(.Platform$OS.type == 'unix', as.integer(getArgs(obj)$CORES), 1) # if windows, can only use 1 here
               ## list that holds Genes and Cells for each separate identified CNV
-              obj@cell_gene <- lapply(obj@cnv_regions,function(i) {
+              obj@cell_gene <- parallel::mclapply(obj@cnv_regions,function(i) {
                   # subset the data to get the rows for the current CNV
                   current_cnv <- pred_cnv_genes_df[which(i == pred_cnv_genes_df$gene_region_name),]
                   # get the index for the genes that are in each cnv
@@ -253,7 +254,8 @@ setMethod(f="getGenesCells",
                   # get unique current CNV state
                   state <- unique(current_cnv$state)
                   return(list("cnv_regions" = i, "Genes" = gene_idx, "Cells" = cells_idx, "State" = state))
-              })
+              },
+              mc.cores = mc.cores)
               return(obj)
           }
 )
