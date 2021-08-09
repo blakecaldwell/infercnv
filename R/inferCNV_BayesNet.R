@@ -318,12 +318,22 @@ setMethod(f="initializeObject",
 
               ## set numerical id's for cell groups and set values in a vector for cell positions in the matrix
               group_id <- rep(NA, max(unlist(obj@observation_grouped_cell_indices)))
-              lapply(seq_along(cell_group_id), function(i) {
+              futile.logger::flog.info(paste("Starting parallel loop over cell groups"))
+
+              mc.cores = ifelse(.Platform$OS.type == 'unix', as.integer(getArgs(obj)$CORES), 1) # if windows, can only use 1 here
+              indices <- parallel::mclapply(seq_along(cell_group_id), function(i) {
                   ## cells in the cluster group
                   cells <- cell_groups_df[cell_groups_df$cell_group_name %in% cell_group_id[i],]$cell
+                  which(colnames(obj@expr.data) %in% cells)
+              },
+              mc.cores = mc.cores)
+
+              futile.logger::flog.info(paste("Finished parallel loop over cell groups"))
+              lapply(seq_along(indices), function(i) {
                   ## set the numerical id in the vector
-                  group_id[which(colnames(obj@expr.data) %in% cells)] <<- i
+                  group_id[indices[[i]]] <<- i
               })
+
               obj@group_id <- group_id
 
               return(obj)
