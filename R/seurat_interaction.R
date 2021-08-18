@@ -230,23 +230,23 @@ add_to_seurat <- function(seurat_obj = NULL,
                 gres = hmm_genes[hmm_genes$cell_group_name == subclust_name, , drop=FALSE]
                 if (nrow(res) > 0) {
                     for (c in unique(res$chr)) {
-                        all_features$feature_vector_chrs_has_cnv[[c]][names(infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]])] = TRUE
-                        all_features$feature_vector_chrs_gene_cnv_proportion[[c]][names(infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]])] = (length(which(gres$chr == c)) / chr_gene_count[[c]])
-                        all_features$feature_vector_chrs_gene_cnv_proportion_scaled[[c]][names(infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]])] = (sum(abs(gres[(which(gres$chr == c)), "state"] - center_state)) / (chr_gene_count[[c]] * scaling_factor))
+                        all_features$feature_vector_chrs_has_cnv[[c]][infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]]] = TRUE
+                        all_features$feature_vector_chrs_gene_cnv_proportion[[c]][infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]]] = (length(which(gres$chr == c)) / chr_gene_count[[c]])
+                        all_features$feature_vector_chrs_gene_cnv_proportion_scaled[[c]][infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]]] = (sum(abs(gres[(which(gres$chr == c)), "state"] - center_state)) / (chr_gene_count[[c]] * scaling_factor))
                     }
                     
                     sub_gres = gres[gres$state < center_state, ]
                     for (c in unique(sub_gres$chr)) {
-                        all_features$feature_vector_chrs_has_loss[[c]][names(infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]])] = TRUE
-                        all_features$feature_vector_chrs_gene_loss_proportion[[c]][names(infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]])] = (length(which(sub_gres$chr == c)) / chr_gene_count[[c]])
-                        all_features$feature_vector_chrs_gene_loss_proportion_scaled[[c]][names(infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]])] = (abs(sum(sub_gres[(which(sub_gres$chr == c)), "state"] - center_state)) / (chr_gene_count[[c]] * scaling_factor))
+                        all_features$feature_vector_chrs_has_loss[[c]][infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]]] = TRUE
+                        all_features$feature_vector_chrs_gene_loss_proportion[[c]][infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]]] = (length(which(sub_gres$chr == c)) / chr_gene_count[[c]])
+                        all_features$feature_vector_chrs_gene_loss_proportion_scaled[[c]][infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]]] = (abs(sum(sub_gres[(which(sub_gres$chr == c)), "state"] - center_state)) / (chr_gene_count[[c]] * scaling_factor))
                     }
                     
                     sub_gres = gres[gres$state > center_state, ]
                     for (c in unique(sub_gres$chr)) {
-                        all_features$feature_vector_chrs_has_dupli[[c]][names(infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]])] = TRUE
-                        all_features$feature_vector_chrs_gene_dupli_proportion[[c]][names(infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]])] = (length(which(sub_gres$chr == c)) / chr_gene_count[[c]])
-                        all_features$feature_vector_chrs_gene_dupli_proportion_scaled[[c]][names(infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]])] = (sum(sub_gres[(which(sub_gres$chr == c)), "state"] - center_state) / (chr_gene_count[[c]] * scaling_factor))
+                        all_features$feature_vector_chrs_has_dupli[[c]][infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]]] = TRUE
+                        all_features$feature_vector_chrs_gene_dupli_proportion[[c]][infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]]] = (length(which(sub_gres$chr == c)) / chr_gene_count[[c]])
+                        all_features$feature_vector_chrs_gene_dupli_proportion_scaled[[c]][infercnv_obj@tumor_subclusters$subclusters[[clust]][[subclust]]] = (sum(sub_gres[(which(sub_gres$chr == c)), "state"] - center_state) / (chr_gene_count[[c]] * scaling_factor))
                     }
                 }
             }
